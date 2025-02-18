@@ -5,6 +5,67 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+public class SwerveDrive extends TimedRobot {
+
+    // Xbox Controller for manual control
+    private XboxController controller;
+
+    // Swerve modules (one for each wheel)
+    private SwerveDriveModule frontLeft, frontRight, backLeft, backRight;
+
+    // Initialization method
+    @Override
+    public void robotInit() {
+        // Initialize controller
+        controller = new XboxController(0);
+
+        // Initialize swerve modules with appropriate motor controllers
+        frontLeft = new SwerveDriveModule(1, 2);  // (drive motor port, steering motor port)
+        frontRight = new SwerveDriveModule(3, 4);
+        backLeft = new SwerveDriveModule(5, 6);
+        backRight = new SwerveDriveModule(7, 8);
+    }
+
+    // Periodic method runs every 20ms
+    @Override
+    public void teleopPeriodic() {
+        double forward = -controller.getY();   // Get the forward/backward input
+        double strafe = controller.getX();    // Get the strafe (sideways) input
+        double rotation = controller.getRawAxis(4);  // Get the rotation input (twist)
+
+        // Call method to update swerve module speeds and angles
+        updateSwerveDrive(forward, strafe, rotation);
+    }
+
+    // Method to calculate wheel speeds and angles for swerve drive
+    private void updateSwerveDrive(double forward, double strafe, double rotation) {
+        // For simplicity, use a basic tank drive math for swerve (could be more complex based on kinematics)
+        double flSpeed = forward + strafe - rotation;
+        double frSpeed = forward - strafe + rotation;
+        double blSpeed = forward - strafe - rotation;
+        double brSpeed = forward + strafe + rotation;
+
+        // Update each module with corresponding speed and angle
+        frontLeft.setSpeedAndAngle(flSpeed, Math.atan2(strafe, forward));
+        frontRight.setSpeedAndAngle(frSpeed, Math.atan2(strafe, forward));
+        backLeft.setSpeedAndAngle(blSpeed, Math.atan2(strafe, forward));
+        backRight.setSpeedAndAngle(brSpeed, Math.atan2(strafe, forward));
+
+        // Display speed info on SmartDashboard
+        SmartDashboard.putNumber("Front Left Speed", flSpeed);
+        SmartDashboard.putNumber("Front Right Speed", frSpeed);
+        SmartDashboard.putNumber("Back Left Speed", blSpeed);
+        SmartDashboard.putNumber("Back Right Speed", brSpeed);
+    }
+}
+
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,6 +79,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Timer;
 
+import edu.wpi.first.wpilibj.XboxController;
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
@@ -44,7 +106,10 @@ public class Robot extends TimedRobot {
  private final Timer timer1 = new Timer();
 
 private final double ROLLER_EJECT_VALUE = 0.44;
+private double driveSpeed = 1;
+private double rollerOut = 0;
 
+private final XboxController x360 = new XboxController(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -140,7 +205,9 @@ else if (timer1.get() <5.5)
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
