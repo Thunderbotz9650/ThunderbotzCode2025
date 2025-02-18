@@ -18,6 +18,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Timer;
 
+import edu.wpi.first.wpilidj.xboxController;
+
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
@@ -44,6 +46,9 @@ public class Robot extends TimedRobot {
  private final Timer timer1 = new Timer();
 
 private final double ROLLER_EJECT_VALUE = 0.44;
+private double drivespeed = 1;
+private double rollerout = 0;
+private fial xboxController x360 = new xboxController(0);
 
 
   /**
@@ -140,12 +145,14 @@ else if (timer1.get() <5.5)
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {}
-
+ 
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {}
